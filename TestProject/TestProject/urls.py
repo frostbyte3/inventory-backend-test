@@ -17,6 +17,42 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from inventory.views import (
+    # Product Views
+    ProductListView,
+    ProductDetailView,
+    ProductCreateView,
+    ProductUpdateView,
+    ProductDeleteView,
+    # Inventory Views
+    InventoryListView,
+    InventoryDetailView,
+    StockUpdateView,
+    # Sale Views
+    SaleListView,
+    SaleDetailView,
+    CreateSaleView,
+    UpdateSaleView,
+    DeleteSaleView,
+)
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # Product URLs
+    path('products/', ProductListView.as_view(), name='product-list'),
+    path('products/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
+    path('products/new/', ProductCreateView.as_view(), name='product-create'),
+    path('products/<int:pk>/update/', ProductUpdateView.as_view(), name='product-update'),
+    path('products/<int:pk>/delete/', ProductDeleteView.as_view(), name='product-delete'),
+
+    # Inventory URLs
+    path('inventory/', InventoryListView.as_view(), name='inventory-list'),
+    path('inventory/<int:pk>/', InventoryDetailView.as_view(), name='inventory-detail'),
+    path('inventory/stock-update/', StockUpdateView.as_view(), name='stock-update'),
+
+    # Sale URLs
+    path('sales/', SaleListView.as_view(), name='sale-list'),
+    path('sales/<int:pk>/', SaleDetailView.as_view(), name='sale-detail'),
+    path('sales/new/', CreateSaleView.as_view(), name='sale-create'),
+    path('sales/<int:pk>/update/', UpdateSaleView.as_view(), name='sale-update'),
+    path('sales/<int:pk>/delete/', DeleteSaleView.as_view(), name='sale-delete'),
 ]

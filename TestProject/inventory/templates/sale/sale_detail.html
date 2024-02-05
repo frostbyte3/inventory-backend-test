@@ -1,0 +1,15 @@
+<!-- sale_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sale Transaction Detail</title>
+</head>
+<body>
+    <h1>Sale Transaction Detail - Sale #{{ sale.pk }}</h1>
+    <p>Product: {{ sale.product.name }}</p>
+    <p>Quantity: {{ sale.quantity }}</p>
+    <p>Total Price: ${{ sale.total_price }}</p>
+    <p>Transaction Time: {{ sale.transaction_time }}</p>
+</body>
+</html>

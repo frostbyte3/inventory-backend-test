@@ -1,0 +1,16 @@
+<!-- sale_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sale Transactions</title>
+</head>
+<body>
+    <h1>Sale Transactions</h1>
+    <ul>
+        {% for sale in sales %}
+            <li><a href="{% url 'sale-detail' pk=sale.pk %}">Sale #{{ sale.pk }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
