@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from inventory.models import Product
+from inventory.models import Product,Inventory
 from django.test import TestCase
 
 class InventoryAPITests(APITestCase):
@@ -27,7 +27,7 @@ class InventoryAPITests(APITestCase):
 class InventoryIntegrationTests(TestCase):
     def setUp(self):
         self.product = Product.objects.create(name='Test Product', description='Test Description', price=10.0)
-        self.stock_update = StockUpdate.objects.create(product=self.product, quantity_change=5, reason='Received new shipment')
+        self.stock_update = Inventory.objects.create(product=self.product, quantity=5)
 
     def test_product_detail_view(self):
         url = reverse('product-detail', kwargs={'pk': self.product.pk})
@@ -43,8 +43,8 @@ class InventoryIntegrationTests(TestCase):
         self.assertEqual(Product.objects.count(), initial_count + 1)
 
     def test_stock_update_creation(self):
-        initial_quantity = self.product.quantity
-        data = {'product': self.product.pk, 'quantity_change': 10, 'reason': 'Received additional stock'}
+        initial_quantity = self.stock_update.quantity
+        data = {'product': self.product.pk, 'quantity': 10}
         response = self.client.post(reverse('stock-update-list'), data)
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(self.product.quantity, initial_quantity + 10)
+        self.assertEqual(self.stock_update.quantity, initial_quantity + 10)

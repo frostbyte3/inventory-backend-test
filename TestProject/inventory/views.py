@@ -44,9 +44,13 @@ class InventoryDetailView(DetailView):
 
 class StockUpdateView(CreateView):
     model = Inventory
-    fields = ['product', 'quantity_change', 'reason', 'update_time']
+    fields = ['product', 'quantity']
     template_name = 'inventory/stock_update_form.html'
     success_url = '/inventory/'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['products'] = Product.objects.all()
+        return context
 
 # Sale Views
 class SaleListView(ListView):
