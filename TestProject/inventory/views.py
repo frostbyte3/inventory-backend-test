@@ -48,7 +48,6 @@ class StockUpdateView(CreateView):
     template_name = 'inventory/stock_update_form.html'
     success_url = '/inventory/'
 
-
 # Sale Views
 class SaleListView(ListView):
     model = Sale
