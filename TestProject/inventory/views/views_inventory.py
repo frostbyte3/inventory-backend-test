@@ -18,12 +18,11 @@ class InventoryDetailView(DetailView):
 
 class StockUpdateView(APIView):
     def post(self, request, *args, **kwargs):
-        data = request.data
         try:
-            product_id = data['product_id']
-            quantity_change = data['quantity_change']
-            reason = data['reason']
-
+            product_id = kwargs['product_id']
+            quantity_change = kwargs['quantity_change']
+            reason = kwargs['reason']
+    
             # Fetch the inventory object for the given product ID
             product = Product.objects.get(id=product_id)
             inventory = Inventory.objects.get(product_id=product_id)

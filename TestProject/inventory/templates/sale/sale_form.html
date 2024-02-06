@@ -17,10 +17,8 @@
         </select>
         <br>
         <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" name="quantity" value="1">
-        <br>
-        <label for="transaction_time">Transaction Time:</label>
-        <input type="datetime-local" id="transaction_time" name="transaction_time">
+        <input type="number" id="quantity" name="quantity" value="0" step="1" min="0">
+
         <br>
         <button type="submit">{% if sale %}Update{% else %}Create{% endif %}</button>
     </form>
