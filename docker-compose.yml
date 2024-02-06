@@ -5,7 +5,7 @@ services:
     container_name: django
     build:
       context: ./TestProject
-    command: python manage.py runserver 0.0.0.0:8000
+    command: /usr/src/app/entrypoint.sh 
     volumes:
       - ./TestProject:/usr/src/app/
     ports:

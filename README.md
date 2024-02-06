@@ -1,28 +1,5 @@
 # How to run
 
-
-install requirements
-```
-python -m venv env
-./env/Scripts/activate
-pip install -r requirements.txt
-```
-
-Make database schema with sqlite: 
-
-```
-python manage.py makemigrations
-python manage.py migrate
-```
-run tests with:
-```
-python ./TestProject/manage.py test inventory
-```
-
-run server with:
-```
-python ./TestProject/manage.py runserver
-```
 using docker:
 ```
 docker-compose up -d --build
