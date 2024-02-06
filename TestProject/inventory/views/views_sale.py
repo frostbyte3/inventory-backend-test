@@ -73,7 +73,9 @@ class UpdateSaleView(View):
         quantity = Decimal(request.POST.get('quantity'))
 
         sale = Sale.objects.get(id=sale_id)
+        product = Product.objects.get(id = product_id)
         sale.quantity=quantity
+        sale.total_price = product.price * quantity
 
         # Call StockUpdateView webhook internally
         stock_update_view = StockUpdateView()
@@ -87,6 +89,31 @@ class UpdateSaleView(View):
         return redirect('.') 
 
 class DeleteSaleView(DeleteView):
-    model = Sale
     template_name = 'sale/sale_confirm_delete.html'
-    success_url = '/sales/'
+    def get(self, request, *args, **kwargs):
+        sale_id = kwargs.get('pk')
+        try:
+            sale = Sale.objects.get(id=sale_id)
+            context = {'sale':sale, 'product':sale.product.id}
+            return render(request, self.template_name, context)
+        except Sale.DoesNotExist:
+            return redirect('/sales')
+
+    def post(self, request, *args, **kwargs):
+        sale_id = kwargs.get('pk')
+        product_id = request.POST.get('product')
+        quantity = Decimal(request.POST.get('quantity'))
+
+        sale = Sale.objects.get(id=sale_id)
+        sale.delete()
+
+        # Call StockUpdateView webhook internally
+        stock_update_view = StockUpdateView()
+        stock_update_view.request = request
+        response = stock_update_view.post(request, product_id=product_id, quantity_change=quantity, reason="Sale Update")
+
+        if(response.status_code>=200 and response.status_code < 300):
+            sale.save()
+            return redirect('/sales')
+            
+        return redirect('.') 
