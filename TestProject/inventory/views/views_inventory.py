@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, DeleteView
-from ..models import Product, Inventory, Sale
+from ..models import Product, Inventory, Sale, StockUpdate
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -22,6 +22,7 @@ class StockUpdateView(APIView):
         try:
             product_id = data['product_id']
             quantity_change = data['quantity_change']
+            reason = data['reason']
 
             # Fetch the inventory object for the given product ID
             product = Product.objects.get(id=product_id)
@@ -31,8 +32,10 @@ class StockUpdateView(APIView):
             sum = inventory.quantity + quantity_change
             if(sum < 0):
                 return Response({'error': 'Not enough inventory for this transaction'}, status=status.HTTP_400_BAD_REQUEST)
+            su = StockUpdate(product = product, quantity_change=quantity_change, reason = reason)
             inventory.quantity = sum
             inventory.save()
+            su.save()
             
             return Response({'message': 'Stock updated successfully'}, status=status.HTTP_200_OK)
         except KeyError:
@@ -40,8 +43,10 @@ class StockUpdateView(APIView):
         except Product.DoesNotExist:
             return Response({'error': 'Specified product does not exist'}, status=status.HTTP_404_NOT_FOUND)
         except Inventory.DoesNotExist:
+            su = StockUpdate(product = product, quantity_change=quantity_change, reason = reason)
             i = Inventory(product = product, quantity=quantity_change)
             i.save()
+            su.save()
             return Response({'message': 'Stock created successfully'}, status=status.HTTP_200_OK)
 
 
