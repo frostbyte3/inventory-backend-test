@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView
 from ..models import Product, Inventory, Sale
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
 # Inventory Views
 class InventoryListView(ListView):
@@ -14,13 +16,32 @@ class InventoryDetailView(DetailView):
     template_name = 'inventory/inventory_detail.html'
     context_object_name = 'inventory'
 
-class StockUpdateView(CreateView):
-    model = Inventory
-    fields = ['product', 'quantity']
-    template_name = 'inventory/stock_update_form.html'
-    success_url = '/inventory/'
+class StockUpdateView(APIView):
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        try:
+            product_id = data['product_id']
+            quantity_change = data['quantity_change']
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['products'] = Product.objects.all()
-        return context
+            # Fetch the inventory object for the given product ID
+            product = Product.objects.get(id=product_id)
+            inventory = Inventory.objects.get(product_id=product_id)
+            
+            # Update the quantity based on the quantity change
+            sum = inventory.quantity + quantity_change
+            if(sum < 0):
+                return Response({'error': 'Not enough inventory for this transaction'}, status=status.HTTP_400_BAD_REQUEST)
+            inventory.quantity = sum
+            inventory.save()
+            
+            return Response({'message': 'Stock updated successfully'}, status=status.HTTP_200_OK)
+        except KeyError:
+            return Response({'error': 'Invalid data received from webhook'}, status=status.HTTP_400_BAD_REQUEST)
+        except Product.DoesNotExist:
+            return Response({'error': 'Specified product does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        except Inventory.DoesNotExist:
+            i = Inventory(product = product, quantity=quantity_change)
+            i.save()
+            return Response({'message': 'Stock created successfully'}, status=status.HTTP_200_OK)
+
+
