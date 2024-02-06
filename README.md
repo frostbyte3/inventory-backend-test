@@ -1,4 +1,6 @@
 # How to run
+
+
 install requirements
 ```
 python -m venv env
@@ -21,6 +23,11 @@ run server with:
 ```
 python ./TestProject/manage.py runserver
 ```
+using docker:
+```
+docker-compose up -d --build
+```
+then navigate to localhost:8001 in browser
 
 
 # Order Management Test Project Backend [Django]
