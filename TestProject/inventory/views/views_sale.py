@@ -91,7 +91,7 @@ class UpdateSaleView(View):
             
         return redirect('.') 
 
-class DeleteSaleView(DeleteView):
+class DeleteSaleView(View):
     template_name = 'sale/sale_confirm_delete.html'
     def get(self, request, *args, **kwargs):
         sale_id = kwargs.get('pk')
@@ -105,7 +105,15 @@ class DeleteSaleView(DeleteView):
     def post(self, request, *args, **kwargs):
         sale_id = kwargs.get('pk')
         product_id = request.POST.get('product')
-        quantity = Decimal(request.POST.get('quantity'))
+        quantity = request.POST.get('quantity')
+
+        if(quantity is None):
+            return redirect('.')
+
+        try:
+            quantity = Decimal(quantity)
+        except TypeError:
+            return redirect('.')
 
         sale = Sale.objects.get(id=sale_id)
         sale.delete()
@@ -117,7 +125,6 @@ class DeleteSaleView(DeleteView):
         response = stock_update_view.post(request)
 
         if(response.status_code>=200 and response.status_code < 300):
-            sale.save()
             return redirect('/sales')
             
         return redirect('.') 

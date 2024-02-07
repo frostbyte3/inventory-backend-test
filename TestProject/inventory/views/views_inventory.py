@@ -22,7 +22,8 @@ class StockUpdateView(APIView):
             product_id = request.data.get('product_id')
             quantity_change = request.data.get('quantity_change')
             reason = request.data.get('reason')
-    
+            if(product_id == None or quantity_change == None or reason == None):
+                raise KeyError
             # Fetch the inventory object for the given product ID
             product = Product.objects.get(id=product_id)
             inventory = Inventory.objects.get(product_id=product_id)
@@ -42,6 +43,8 @@ class StockUpdateView(APIView):
         except Product.DoesNotExist:
             return Response({'error': 'Specified product does not exist'}, status=status.HTTP_404_NOT_FOUND)
         except Inventory.DoesNotExist:
+            if(quantity_change<0):
+                return Response({'error': 'Cannot create inventory with negative quantity'}, status=status.HTTP_400_BAD_REQUEST)
             su = StockUpdate(product = product, quantity_change=quantity_change, reason = reason)
             i = Inventory(product = product, quantity=quantity_change)
             i.save()

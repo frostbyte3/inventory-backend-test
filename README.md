@@ -6,6 +6,10 @@ docker-compose up -d --build
 ```
 then navigate to localhost:8001 in browser
 
+To run tests, go into exec shell of docker container and run:
+```
+python manage.py test inventory
+```
 
 # Order Management Test Project Backend [Django]
 
