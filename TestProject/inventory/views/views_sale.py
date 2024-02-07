@@ -47,7 +47,8 @@ class CreateSaleView(View):
         # Call StockUpdateView webhook internally
         stock_update_view = StockUpdateView()
         stock_update_view.request = request
-        response = stock_update_view.post(request, product_id=product_id, quantity_change=-quantity, reason="Sale")
+        stock_update_view.request.data={'product_id':product_id, 'quantity_change':-quantity, 'reason':"Sale"}
+        response = stock_update_view.post(request)
 
         if(response.status_code>=200 and response.status_code < 300):
             sale.save()
@@ -71,16 +72,18 @@ class UpdateSaleView(View):
         sale_id = kwargs.get('pk')
         product_id = request.POST.get('product')
         quantity = Decimal(request.POST.get('quantity'))
-
+        
         sale = Sale.objects.get(id=sale_id)
         product = Product.objects.get(id = product_id)
+        temp_quantity = sale.quantity
         sale.quantity=quantity
         sale.total_price = product.price * quantity
 
         # Call StockUpdateView webhook internally
         stock_update_view = StockUpdateView()
         stock_update_view.request = request
-        response = stock_update_view.post(request, product_id=product_id, quantity_change=-quantity, reason="Sale Update")
+        stock_update_view.request.data = {'product_id':product_id, 'quantity_change':-(quantity-temp_quantity), 'reason':"Sale Update"}
+        response = stock_update_view.post(request)
 
         if(response.status_code>=200 and response.status_code < 300):
             sale.save()
@@ -110,7 +113,8 @@ class DeleteSaleView(DeleteView):
         # Call StockUpdateView webhook internally
         stock_update_view = StockUpdateView()
         stock_update_view.request = request
-        response = stock_update_view.post(request, product_id=product_id, quantity_change=quantity, reason="Sale Update")
+        stock_update_view.request.data = {'product_id':product_id, 'quantity_change':quantity, 'reason':"Sale Deletion"}
+        response = stock_update_view.post(request)
 
         if(response.status_code>=200 and response.status_code < 300):
             sale.save()

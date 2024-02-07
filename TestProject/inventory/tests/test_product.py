@@ -13,7 +13,6 @@ class ProductAPITests(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    
     def test_create_product(self):
         url = reverse('product-create')
         data = {'name': 'New Product', 'description': 'New Description', 'price': 20.0}
