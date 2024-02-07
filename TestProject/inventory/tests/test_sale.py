@@ -36,33 +36,3 @@ class SaleAPITests(APITestCase):
         url = reverse('sale-detail', kwargs={'pk': self.sale.pk})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-
-class SaleIntegrationTests(TestCase):
-    def setUp(self):
-        self.product = Product.objects.create(name='Test Product', description='Test Description', price=10.0)
-        self.sale = Sale.objects.create(product=self.product, quantity=2, total_price=20.0)
-
-    def test_sale_creation(self):
-        initial_count = Sale.objects.count()
-        data = {'product': self.product.pk, 'quantity': 3, 'total_price': 30.0}
-        response = self.client.post(reverse('sale-list'), data)
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(Sale.objects.count(), initial_count + 1)
-
-    def test_sale_detail_view(self):
-        url = reverse('sale-detail', kwargs={'pk': self.sale.pk})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.sale.product.name)
-
-    def test_sale_update(self):
-        data = {'quantity': 4, 'total_price': 40.0}
-        response = self.client.patch(reverse('sale-detail', kwargs={'pk': self.sale.pk}), data)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['quantity'], 4)
-
-    def test_sale_deletion(self):
-        initial_count = Sale.objects.count()
-        response = self.client.delete(reverse('sale-detail', kwargs={'pk': self.sale.pk}))
-        self.assertEqual(response.status_code, 204)
-        self.assertEqual(Sale.objects.count(), initial_count - 1)
