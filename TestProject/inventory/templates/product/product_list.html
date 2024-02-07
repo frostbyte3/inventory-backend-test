@@ -1,0 +1,17 @@
+<!-- product_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product List</title>
+</head>
+<body>
+    <h1>Products</h1>
+    <ul>
+        {% for product in products %}
+            <li><a href="{% url 'product-detail' pk=product.pk %}">{{ product.name }}</a></li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'product-create' %}">Add New Product</a>
+</body>
+</html>

@@ -1,3 +1,16 @@
+# How to run
+
+using docker:
+```
+docker-compose up -d --build
+```
+then navigate to localhost:8001 in browser
+
+To run tests, go into exec shell of docker container and run:
+```
+python manage.py test inventory
+```
+
 # Order Management Test Project Backend [Django]
 
 Your job on this project is to develop an order management module.

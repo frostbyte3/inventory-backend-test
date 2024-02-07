@@ -1,0 +1,16 @@
+<!-- product_form.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if product %}Edit Product{% else %}Add New Product{% endif %}</title>
+</head>
+<body>
+    <h1>{% if product %}Edit Product{% else %}Add New Product{% endif %}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">{% if product %}Update{% else %}Add{% endif %}</button>
+    </form>
+</body>
+</html>

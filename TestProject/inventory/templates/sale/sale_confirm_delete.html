@@ -1,0 +1,20 @@
+<!-- sale_confirm_delete.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm Deletion</title>
+</head>
+<body>
+    <h1>Confirm Deletion</h1>
+    <p>Are you sure you want to delete Sale #{{ sale.pk }}?</p>
+    <form method="post">
+        <input hidden name="pk" value="{{sale.id}}"/>
+        <input hidden name="product" value="{{product}}"/>
+        <input hidden name="quantity" value="{{sale.quantity}}"/>
+        {% csrf_token %}
+        <button type="submit">Confirm</button>
+    </form>
+    <a href="{% url 'sale-detail' pk=sale.pk %}">Cancel</a>
+</body>
+</html>
